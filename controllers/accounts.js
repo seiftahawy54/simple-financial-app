@@ -1,4 +1,6 @@
 import Accounts from "../models/accounts.js";
+import Transactions from "../models/transactions.js";
+import {TransactionsTypes} from "../models/enums.js";
 
 const openAccount = async (req, res) => {
   const { name, email, balance } = req.body;
@@ -32,8 +34,19 @@ const depositFunds = async (req, res) => {
     }
 
     account.balance += amount;
+
+    const transaction = new Transactions({
+      transactionType: TransactionsTypes.DEPOSIT,
+      amount,
+      balance: account.balance,
+      accountId: account._id,
+    });
+
+    await transaction.save();
     await account.save();
-    return res.status(200).json(account);
+    return res.status(200).json({
+      transactionId: transaction._id
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -57,8 +70,19 @@ const withdrawFunds = async (req, res) => {
     }
 
     account.balance -= amount;
+
+    const transaction = new Transactions({
+      transactionType: TransactionsTypes.WITHDRAW,
+      amount,
+      balance: account.balance,
+      accountId: account._id,
+    })
+
+    await transaction.save();
     await account.save();
-    return res.status(200).json(account);
+    return res.status(200).json({
+      transactionId: transaction._id
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -71,7 +95,9 @@ const checkBalance = async (req, res) => {
     if (!account) {
       return res.status(404).json({ error: "Account not found" });
     }
-    return res.status(200).json(account);
+    return res.status(200).json({
+      balance: account.balance
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

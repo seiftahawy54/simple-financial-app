@@ -32,6 +32,9 @@ const router = express.Router();
  *                 format: email
  *               name:
  *                 type: string
+ *               balance:
+ *                 type: number
+ *                 default: 0
  *     responses:
  *       201:
  *         description: Account opened successfully

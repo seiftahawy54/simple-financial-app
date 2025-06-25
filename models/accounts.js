@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import {Double} from "mongodb";
 
-const accounts = mongoose.model("accounts", {
+const accountsSchema = new mongoose.Schema({
   name: String,
   email: {
     type: String,
@@ -13,6 +13,10 @@ const accounts = mongoose.model("accounts", {
     default: 0,
     index: true,
   },
+}, {
+  timestamps: true,
 });
+
+const accounts = mongoose.model("accounts", accountsSchema);
 
 export default accounts;

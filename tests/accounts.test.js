@@ -3,7 +3,9 @@ import { describe, it, beforeAll, afterAll, expect, beforeEach } from "vitest";
 import App from "../index.js";
 
 import Accounts from "../models/accounts.js";
-import mongoose from "mongoose"; // adjust path
+import mongoose from "mongoose";
+import Transactions from "../models/transactions.js";
+import {Double} from "mongodb"; // adjust path
 
 describe("Accounts Controller", () => {
   let app;
@@ -19,9 +21,14 @@ describe("Accounts Controller", () => {
       .catch((error) => {
         console.log(error);
       });
-  });
 
-  beforeEach(async () => {
+    Transactions.deleteMany({})
+      .then(() => {
+        mongoose.connection.close();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   });
 
   // Test openAccount
@@ -53,15 +60,16 @@ describe("Accounts Controller", () => {
 
   // Test depositFunds
   it("should deposit funds into account", async () => {
-    await Accounts.create({ name: "Deposit User", email: "dep@example.com", balance: 100 });
+    const account = await Accounts.create({ name: "Deposit User", email: "dep@example.com", balance: 100 });
 
     const res = await request(app).post("/api/v1/accounts/deposit-funds").send({
       email: "dep@example.com",
       amount: 50,
     });
 
+    const transaction = await Transactions.findOne({ accountId: account._id, transactionType: "deposit", amount: new Double(50) });
     expect(res.status).toBe(200);
-    expect(res.body.balance).toBe(150);
+    expect(res.body.transactionId).toBe(transaction._id.toString());
   });
 
   it("should return 404 if account not found on deposit", async () => {
@@ -88,15 +96,17 @@ describe("Accounts Controller", () => {
 
   // Test withdrawFunds
   it("should withdraw funds from account", async () => {
-    await Accounts.create({ name: "Withdraw User", email: "with@example.com", balance: 100 });
+    const account = await Accounts.create({ name: "Withdraw User", email: "with@example.com", balance: 100 });
 
     const res = await request(app).post("/api/v1/accounts/withdraw-funds").send({
       email: "with@example.com",
-      amount: 50,
+      amount: 10,
     });
 
+    const transaction = await Transactions.findOne({ accountId: account._id, transactionType: "withdraw", amount: new Double(10) });
+
     expect(res.status).toBe(200);
-    expect(res.body.balance).toBe(50);
+    expect(res.body.transactionId).toBe(transaction._id.toString());
   });
 
   it("should return 404 if account not found on withdraw", async () => {
@@ -140,7 +150,6 @@ describe("Accounts Controller", () => {
     const res = await request(app).get("/api/v1/accounts/check-balance/bal@example.com");
 
     expect(res.status).toBe(200);
-    expect(res.body.email).toBe("bal@example.com");
     expect(res.body.balance).toBe(75);
   });
 

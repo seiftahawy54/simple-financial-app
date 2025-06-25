@@ -92,3 +92,20 @@ export const validateCheckBalance = [
   },
 ];
 
+export const validateGetAllTransactions = [
+  param("email")
+    .trim()
+    .notEmpty()
+    .withMessage("Email parameter is required")
+    .isEmail()
+    .withMessage("Must be a valid email"),
+
+  (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+    next();
+  },
+];
+
