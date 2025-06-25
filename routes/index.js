@@ -3,6 +3,6 @@ import express from "express";
 
 const router = express.Router();
 
-router.use("/api/v1/accounts", accounts);
+router.use("/accounts", accounts);
 
-export default accounts
+export default router;

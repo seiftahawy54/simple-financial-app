@@ -2,6 +2,9 @@ import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import cors from "cors";
+import swaggerUi from "swagger-ui-express";
+import swaggerDocument from "./misc/swagger.js";
+import routes from "./routes/index.js";
 
 dotenv.config({
   path: `./.env.${process.env.NODE_ENV}`,
@@ -9,10 +12,16 @@ dotenv.config({
 
 const app = express();
 
-app.use(cors());
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors());
+app.use(cors({
+  origin: ["http://localhost:3000", "http://localhost:yourSwaggerPort"] // adjust as needed
+}));
+
+app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
+app.use("/api/v1", routes);
 
 
 export default async () => {

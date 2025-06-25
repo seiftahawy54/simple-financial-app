@@ -1,4 +1,4 @@
-import Accounts from "../models/accounts";
+import Accounts from "../models/accounts.js";
 
 const openAccount = async (req, res) => {
   const { name, email, balance } = req.body;
@@ -48,8 +48,8 @@ const withdrawFunds = async (req, res) => {
       return res.status(404).json({ error: "Account not found" });
     }
 
-    if (typeof amount !== "number" || isNaN(amount) || amount >= 0) {
-      return res.status(400).json({ error: "Amount must be a number and less than 0" });
+    if (typeof amount !== "number" || isNaN(amount) || amount <= 0) {
+      return res.status(400).json({ error: "Amount must be a number and greater than 0" });
     }
 
     if (account.balance < amount) {
