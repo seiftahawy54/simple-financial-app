@@ -16,7 +16,7 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors({
-  origin: ["http://localhost:3000", "http://localhost:yourSwaggerPort"] // adjust as needed
+  origin: ["http://localhost:3000"]
 }));
 
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
