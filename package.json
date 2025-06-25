@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "cross-env NODE_ENV=development nodemon server.js",
     "start": "node server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "cross-env NODE_ENV=test vitest --run --maxThreads=1"
   },
   "dependencies": {
     "body-parser": "^2.2.0",
@@ -23,6 +23,7 @@
     "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
+    "vitest": "^3.2.4",
     "nodemon": "^3.1.10"
   }
 }

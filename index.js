@@ -23,11 +23,12 @@ app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.use("/api/v1", routes);
 
+export const db = () => mongoose.connect(process.env.MONGO_URL);
 
 export default async () => {
   try {
-    const db = await mongoose.connect(process.env.MONGO_URL);
-    app.listen(process.env.PORT, () => {
+    await db();
+    return app.listen(process.env.PORT, () => {
       console.log(`Server started at ${process.env.PORT}`);
     });
   } catch (error) {
