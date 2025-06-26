@@ -14,8 +14,13 @@ const getAllTransactionsForUser = async (req, res) => {
 
     const transactions = await Transactions.aggregate([
       {
+        $match: {
+          accountId: account._id,
+        }
+      },
+      {
         $group: {
-          accountId: "$accountId",
+          _id: "$accountId",
           totalDeposits: {
             $sum: {
               $cond: [{ $eq: ["$transactionType", "deposit"] }, "$amount", 0]
@@ -27,10 +32,18 @@ const getAllTransactionsForUser = async (req, res) => {
             }
           }
         }
+      },
+      {
+        $project: {
+          _id: 0,
+          totalDeposits: 1,
+          totalWithdrawals: 1,
+          accountId: "$_id"
+        }
       }
     ]);
 
-    if (!transactions || !transactionsDetails) {
+    if (!transactions || !transactionsDetails || (Array.isArray(transactions) && transactions.length === 0)) {
       return res.status(404).json({ error: "Transactions not found" });
     }
 

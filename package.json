@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "cross-env NODE_ENV=development nodemon server.js",
     "start": "node server.js",
-    "test": "cross-env NODE_ENV=test vitest --run --maxThreads=1"
+    "test": "cross-env NODE_ENV=test vitest --run --no-file-parallelism"
   },
   "dependencies": {
     "body-parser": "^2.2.0",
