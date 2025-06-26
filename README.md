@@ -29,7 +29,7 @@
 
    ```bash
    npm install
-````
+    ```
 
 2. Start the server in development mode:
 
