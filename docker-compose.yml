@@ -8,16 +8,16 @@ services:
       - "3000:3000"
     environment:
       - PORT=3000
-      - NODE_ENV=development
-      - MONGODB_URI=mongodb://mongo:27017/db
+      - NODE_ENV=production
+      - MONGO_URL=mongodb://mongo:27017/db
 
   mongo:
     image: mongo:7.0
     container_name: mongo
     ports:
       - "27017:27017"
-#    volumes:
-#      - ./.data:/data/db
+    volumes:
+      - ./.data:/data/db
 
-#volumes:
-#  .data:
+volumes:
+  .data:

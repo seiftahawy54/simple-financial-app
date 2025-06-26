@@ -6,9 +6,9 @@ import swaggerUi from "swagger-ui-express";
 import swaggerDocument from "./misc/swagger.js";
 import routes from "./routes/index.js";
 
-dotenv.config({
-  path: `./.env.${process.env.NODE_ENV}`,
-});
+if (process.env.NODE_ENV !== "production") {
+  dotenv.config({ path: `./.env.${process.env.NODE_ENV}` });
+}
 
 const app = express();
 
